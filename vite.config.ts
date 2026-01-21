@@ -1,14 +1,13 @@
 import { defineConfig, loadEnv } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
 import AutoImport from 'unplugin-auto-import/vite'
-import path from 'path'
 import { injectIco } from '@meng-xi/vite-plugin'
 
+import path from 'path'
 function resolve(dir: string) {
 	return path.resolve(__dirname, dir)
 }
 
-// https://vitejs.dev/config/
 export default defineConfig(config => {
 	const viteEnv = loadEnv(config.mode, process.cwd())
 
@@ -41,12 +40,14 @@ export default defineConfig(config => {
 			injectIco({
 				/** 图标基础路径 */
 				base: viteEnv.VITE_BASE_URL,
+				/** 是否启用图标注入 */
+				enabled: isH5 && isProd,
 				/** 图标复制选项 */
 				copyOptions: {
 					/** 图标源目录 */
 					sourceDir: resolve('public'),
 					/** 图标目标目录 */
-					targetDir: isProd ? resolve('dist/build/h5') : resolve('dist/dev/h5')
+					targetDir: resolve('dist/build/h5')
 				}
 			})
 		].filter(Boolean),
