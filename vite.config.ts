@@ -2,7 +2,7 @@ import { defineConfig, loadEnv } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
 import AutoImport from 'unplugin-auto-import/vite'
 import path from 'path'
-import { copyFile, injectIco } from './plugins'
+import { injectIco } from '@meng-xi/vite-plugin'
 
 function resolve(dir: string) {
 	return path.resolve(__dirname, dir)
@@ -37,11 +37,18 @@ export default defineConfig(config => {
 				vueTemplate: true
 			}),
 
-			/** 仅在 H5 模式下注入 favicon.ico */
-			isH5 ? injectIco(viteEnv.VITE_BASE_URL) : null,
-
-			/** 仅在 H5 模式下复制文件 */
-			isH5 ? copyFile({ sourceDir: resolve('public'), targetDir: isProd ? resolve('dist/build/h5') : resolve('dist/dev/h5') }) : null
+			/** 自动注入图标 */
+			injectIco({
+				/** 图标基础路径 */
+				base: viteEnv.VITE_BASE_URL,
+				/** 图标复制选项 */
+				copyOptions: {
+					/** 图标源目录 */
+					sourceDir: resolve('public'),
+					/** 图标目标目录 */
+					targetDir: isProd ? resolve('dist/build/h5') : resolve('dist/dev/h5')
+				}
+			})
 		].filter(Boolean),
 
 		resolve: {
